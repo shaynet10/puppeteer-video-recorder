@@ -1,6 +1,6 @@
 {
   "name": "puppeteer-video-recorder",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "This package creates a video of Puppeteer's page, using Chrome API screencast and ffmpeg",
   "main": "index.js",
   "scripts": {
