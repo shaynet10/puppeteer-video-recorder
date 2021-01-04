@@ -1,0 +1,27 @@
+{
+  "name": "puppeteer-video-recording-tests",
+  "version": "1.0.0",
+  "description": "The test folder is now separated from the main folder, in order to ansure we don't depend Puppeteer for whoever needs to just use the package as is",
+  "main": "openGoogle.js",
+  "scripts": {
+    "init-images-path": "rm -rf ./images; mkdir -p ./images",
+    "test": "node ./openGoogle.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shaynet10/puppeteer-video-recorder.git"
+  },
+  "keywords": [
+    "puppeteer",
+    "mass",
+    "screenshots",
+    "video",
+    "record"
+  ],
+  "author": "Shay Gueta",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/shaynet10/puppeteer-video-recorder/issues"
+  },
+  "homepage": "https://github.com/shaynet10/puppeteer-video-recorder#readme"
+}
