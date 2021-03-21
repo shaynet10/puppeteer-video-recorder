@@ -14,7 +14,7 @@ class PuppeteerVideoRecorder {
         await this.fsHandler.init(outputFolder);
         const { imagesPath,imagesFilename, appendToFile } = this.fsHandler;
         await this.screenshots.init(page, imagesPath, {
-            afterWritingImageFile: (filename) => appendToFile(imagesFilename, `file '${filename}'\n`)
+            afterWritingImageFile: (filename,duration) => appendToFile(imagesFilename, `file '${filename}'\nduration ${duration}\n`)
         });
     }             
 
