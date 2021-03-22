@@ -1,4 +1,4 @@
-# puppeteer-video-recorder
+# puppeteer-video-recorder - Dreamdealer Edit
 [Prerequisites](#Prerequisites "Prerequisites") | [Installation](#Installation "Installation") | [Manual](#Manual "Manual") | [InitOptions](InitOptions.md "InitOptions") | [StartOptions](StartOptions.md "StartOptions") | [FAQ](#FAQ "FAQ")
 
 <p>
