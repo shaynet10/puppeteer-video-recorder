@@ -8,15 +8,15 @@ class PuppeteerVideoRecorder {
         this.fsHandler = new FsHandler();
     }
 
-    async init(page, outputFolder){
+    async init(page, outputFolder, testName){
         this.page = page;
         this.outputFolder = outputFolder;
-        await this.fsHandler.init(outputFolder);
-        const { imagesPath,imagesFilename, appendToFile } = this.fsHandler;
+        await this.fsHandler.init(outputFolder, testName);
+        const { imagesPath, imagesFilename, appendToFile } = this.fsHandler;
         await this.screenshots.init(page, imagesPath, {
-            afterWritingImageFile: (filename) => appendToFile(imagesFilename, `file '${filename}'\n`)
+            afterWritingImageFile: (filename) => appendToFile(imagesFilename, `file '${filename.replace(outputFolder,'')}'\n`)
         });
-    }             
+    }
 
     start(options = {}) { 
         return this.screenshots.start(options);
@@ -24,7 +24,13 @@ class PuppeteerVideoRecorder {
     
     async stop () {
     	await this.screenshots.stop();
-    	return this.createVideo();
+    	await this.createVideo();
+        await this.fsHandler.clear();
+    }
+
+    async stopButDontSaveVideo () {
+    	await this.screenshots.stop();
+        await this.fsHandler.clear();
     }
 
     get defaultFFMpegCommand() {
@@ -35,17 +41,20 @@ class PuppeteerVideoRecorder {
             '-safe 0',
             `-i ${imagesFilename}`,
             '-framerate 60',
-            videoFilename
+            `"${videoFilename}"`
         ].join(' ');
     }
 
     createVideo(ffmpegCommand = '') {
         const _ffmpegCommand = ffmpegCommand || this.defaultFFMpegCommand;
-        exec(_ffmpegCommand, (error, stdout, stderr) => {
-            if (error) throw new Error(error);
-            console.log(stdout);
-            console.log(stderr);
-        });
+
+        return new Promise((resolve, reject) => {
+            exec(_ffmpegCommand, (error) => {
+                if (error) reject(error);
+
+                resolve();
+            });
+        });       
     }
 }
 
