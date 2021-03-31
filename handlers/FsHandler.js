@@ -1,4 +1,4 @@
-const { appendFile, mkdir, rmdir, unlink } = require('fs').promises;
+const { appendFile, mkdir, rmdir } = require('fs').promises;
 const { openSync, closeSync, existsSync } = require('fs');
 const { join } = require('path');
 
@@ -10,7 +10,7 @@ class FsHandler {
         const hours = this.addZeroBefore(now.getHours());
         const minutes = this.addZeroBefore(now.getMinutes());
         const seconds = this.addZeroBefore(now.getSeconds());
-        const videofilename = `${testName.replace(/ /gi, '_').toLowerCase()}-${hours}:${minutes}:${seconds}.webm`;
+        const videofilename = `../${testName}-${hours}:${minutes}:${seconds}.webm`;
         
         this.videoFilename = join(this.outputFolder, videofilename);
         this.imagesPath = join(this.outputFolder, 'images');
@@ -25,11 +25,8 @@ class FsHandler {
     }
 
     async clear() {
-        if (await existsSync(this.imagesPath)) {
-            await rmdir(this.imagesPath, { recursive: true });
-        }
-        if (await existsSync(this.imagesFilename)) {
-            await unlink(this.imagesFilename);
+        if (await existsSync(this.outputFolder)) {
+            await rmdir(this.outputFolder, { recursive: true });
         }
     }
 
