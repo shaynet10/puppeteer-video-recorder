@@ -28,7 +28,7 @@ class PuppeteerVideoRecorder {
         await this.fsHandler.clear();
     }
 
-    async stopButDontSaveVideo () {
+    async cancel () {
     	await this.screenshots.stop();
         await this.fsHandler.clear();
     }
