@@ -11,11 +11,11 @@ class PuppeteerVideoRecorder {
     async init(page, outputFolder, testName){
         this.page = page;
         this.outputFolder = outputFolder;
-        // replace spaces with underscores and form a name for a sub-folder for each test
-        this.testSubFolder = testName.replace(/ /gi, '_').toLowerCase();
+        // if no testName was provided use a timestamp
+        this.testName = testName ? testName : Date.now();
         // append sub-folder name to output folder to form the full output folder name
-        this.fullOutputFolder = `${this.outputFolder.replace(/\/$/, "")}/${this.testSubFolder}/`;
-        await this.fsHandler.init(this.fullOutputFolder, testName);
+        this.fullOutputFolder = `${this.outputFolder.replace(/\/$/, "")}/${this.testName.replace(/ /gi, '_').toLowerCase()}/`;
+        await this.fsHandler.init(this.fullOutputFolder, this.testName);
         const { imagesPath, imagesFilename, appendToFile } = this.fsHandler;
         // strip the full output foldername from the filename to prevent FFMPEG throwing errors
         await this.screenshots.init(page, imagesPath, {
@@ -34,17 +34,14 @@ class PuppeteerVideoRecorder {
     	await this.createVideo();
     }
 
-    // stop recording, save video and clear the subfolder with images
-    async stopAndClear () {
-    	await this.screenshots.stop();
-    	await this.createVideo();
+    // clear the subfolder with images
+    async clear () {
         await this.fsHandler.clearOutputSubFolder();
     }
 
-    // stop recording, do not save a video and clear all images
+    // stop recording, do not save a video
     async cancel () {
     	await this.screenshots.stop();
-        await this.fsHandler.clearOutputSubFolder();
     }
 
     get defaultFFMpegCommand() {
