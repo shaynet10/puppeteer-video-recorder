@@ -8,18 +8,23 @@ class PuppeteerVideoRecorder {
         this.fsHandler = new FsHandler();
     }
 
-    async init(page, outputFolder, testName){
+    async init(page, outputFolder, name = Date.now()){
         this.page = page;
         this.outputFolder = outputFolder;
-        // if no testName was provided use a timestamp
-        this.testName = testName ? testName : Date.now();
+        this.testName = name;
+        
         // append sub-folder name to output folder to form the full output folder name
         this.fullOutputFolder = `${this.outputFolder.replace(/\/$/, "")}/${this.testName.replace(/ /gi, '_').toLowerCase()}/`;
+
         await this.fsHandler.init(this.fullOutputFolder, this.testName);
+        
         const { imagesPath, imagesFilename, appendToFile } = this.fsHandler;
-        // strip the full output foldername from the filename to prevent FFMPEG throwing errors
+        
         await this.screenshots.init(page, imagesPath, {
-            afterWritingImageFile: (filename) => appendToFile(imagesFilename, `file '${filename.replace(this.fullOutputFolder,'')}'\n`)
+            // strip the full output foldername from the filename to prevent FFMPEG throwing errors
+            afterWritingImageFile: (filename) => {
+                appendToFile(imagesFilename, `file 'images${filename.split(imagesPath)[1]}'\n`)
+            }
         });
     }
 
