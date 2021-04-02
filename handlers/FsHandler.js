@@ -4,7 +4,6 @@ const { join } = require('path');
 
 class FsHandler {
     async init(outputFolder, name = Date.now()) {
-        const now = new Date();
         this.outputFolder = outputFolder;
 
         // do not put the video in the test subfolder, but in the root recording folder
@@ -16,10 +15,6 @@ class FsHandler {
         await this.verifyPathExists(this.outputFolder);
         await this.verifyPathExists(this.imagesPath);   
         await this.verifyPathExists(this.imagesFilename, 'file');
-    }
-
-    addZeroBefore(n) {
-        return (n < 10 ? '0' : '') + n;
     }
 
     async clearOutputSubFolder() {
