@@ -1,16 +1,26 @@
-const { appendFile, mkdir } = require('fs').promises;
+const { appendFile, mkdir, rmdir } = require('fs').promises;
 const { openSync, closeSync, existsSync } = require('fs');
 const { join } = require('path');
 
 class FsHandler {
-    async init(outputFolder) {
+    async init(outputFolder, name = Date.now()) {
         this.outputFolder = outputFolder;
-        this.videoFilename = join(this.outputFolder, Date.now() + '.webm');
+
+        // do not put the video in the test subfolder, but in the root recording folder
+        const videofilename = `../${name}.webm`;
+        
+        this.videoFilename = join(this.outputFolder, videofilename);
         this.imagesPath = join(this.outputFolder, 'images');
         this.imagesFilename = join(this.outputFolder, 'images.txt');
         await this.verifyPathExists(this.outputFolder);
         await this.verifyPathExists(this.imagesPath);   
         await this.verifyPathExists(this.imagesFilename, 'file');
+    }
+
+    async clearOutputSubFolder() {
+        if (await existsSync(this.outputFolder)) {
+            await rmdir(this.outputFolder, { recursive: true });
+        }
     }
 
     createEmptyFile(filename) {
