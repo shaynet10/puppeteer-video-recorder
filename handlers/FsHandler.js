@@ -3,17 +3,12 @@ const { openSync, closeSync, existsSync } = require('fs');
 const { join } = require('path');
 
 class FsHandler {
-    async init(outputFolder, videoName) {
+    async init(outputFolder, name = Date.now()) {
         const now = new Date();
         this.outputFolder = outputFolder;
 
-        // get the time to construct a more human readable timestamp in the filename
-        const hours = this.addZeroBefore(now.getHours());
-        const minutes = this.addZeroBefore(now.getMinutes());
-        const seconds = this.addZeroBefore(now.getSeconds());
-
         // do not put the video in the test subfolder, but in the root recording folder
-        const videofilename = `../${videoName}-${hours}:${minutes}:${seconds}.webm`;
+        const videofilename = `../${name}.webm`;
         
         this.videoFilename = join(this.outputFolder, videofilename);
         this.imagesPath = join(this.outputFolder, 'images');
