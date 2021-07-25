@@ -1,4 +1,4 @@
-const { appendFile, mkdir } = require('fs').promises;
+const { appendFile, mkdir, readdir, unlink } = require('fs').promises;
 const { openSync, closeSync, existsSync } = require('fs');
 const { join } = require('path');
 
@@ -10,7 +10,8 @@ class FsHandler {
         this.imagesFilename = join(this.outputFolder, 'images.txt');
         await this.verifyPathExists(this.outputFolder);
         await this.verifyPathExists(this.imagesPath);   
-        await this.verifyPathExists(this.imagesFilename, 'file');
+        await this.createEmptyFile(this.imagesFilename, 'file');
+        await this.clearImagesInPath(this.imagesPath);
     }
 
     createEmptyFile(filename) {
@@ -28,6 +29,16 @@ class FsHandler {
 
     appendToFile(filename, data) {
         return appendFile(filename, data);
+    }
+
+    async clearImagesInPath(imagesPath) {
+        const files = await readdir(imagesPath);
+        console.log(`Removing files in ${imagesPath}`);
+        for (const file of files) {
+            const filename = join(imagesPath, file);
+            console.log(`Removing file ${filename}`);
+            await unlink(filename);
+        }
     }
 }
 
