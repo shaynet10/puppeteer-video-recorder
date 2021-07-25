@@ -1,5 +1,5 @@
 # puppeteer-video-recorder
-[Prerequisites](#Prerequisites "Prerequisites") | [Installation](#Installation "Installation") | [Manual](#Manual "Manual") | [InitOptions](InitOptions.md "InitOptions") | [StartOptions](StartOptions.md "StartOptions") | [FAQ](#FAQ "FAQ")
+[Prerequisites](#Prerequisites "Prerequisites") | [Installation](#Installation "Installation") | [Manual](#Manual "Manual") | [FAQ](#FAQ "FAQ")
 
 <p>
 Puppeteer video recorder is a simple Puppeteer's plugin to create automatic videos for every new frame appears in the browser.
