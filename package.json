@@ -4,7 +4,7 @@
   "description": "This package creates a video of Puppeteer's page, using Chrome API screencast and ffmpeg",
   "main": "index.js",
   "scripts": {
-    "test": "node ./tests/openGoogle.js"
+    "test": "cd ./tests; npm test"
   },
   "keywords": [
     "cast",
@@ -47,7 +47,6 @@
     "child-process": "^1.0.2",
     "fs": "0.0.1-security",
     "path": "^0.12.7",
-    "puppeteer": "^5.5.0",
     "puppeteer-mass-screenshots": "^1.0.14"
   },
   "directories": {
