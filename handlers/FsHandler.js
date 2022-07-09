@@ -5,11 +5,11 @@ const { join } = require('path');
 class FsHandler {
     async init(outputFolder) {
         this.outputFolder = outputFolder;
-        this.videoFilename = join(this.outputFolder, Date.now() + '.webm');
+        this.videoFilename = join(this.outputFolder, Date.now() + '.mp4');
         this.imagesPath = join(this.outputFolder, 'images');
         this.imagesFilename = join(this.outputFolder, 'images.txt');
         await this.verifyPathExists(this.outputFolder);
-        await this.verifyPathExists(this.imagesPath);   
+        await this.verifyPathExists(this.imagesPath);
         await this.createEmptyFile(this.imagesFilename, 'file');
         await this.clearImagesInPath(this.imagesPath);
     }

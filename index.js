@@ -35,14 +35,17 @@ class PuppeteerVideoRecorder {
             '-f concat',
             '-safe 0',
             `-i ${imagesFilename}`,
-            '-framerate 60',
+            '-pix_fmt yuv420p',
+            '-vf scale="720:1280"',
             videoFilename
         ].join(' ');
     }
 
     async createVideo(ffmpegCommand = '') {
+        const { videoFilename } = this.fsHandler;
         const _ffmpegCommand = ffmpegCommand || this.defaultFFMpegCommand;
-        return await promisify(exec)(_ffmpegCommand);
+        await promisify(exec)(_ffmpegCommand);
+        return videoFilename
     }
 }
 
