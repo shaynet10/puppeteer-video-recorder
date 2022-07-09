@@ -1,5 +1,6 @@
 const { FsHandler } = require('./handlers');
 const { exec } = require('child_process');
+const { promisify } = require('util');
 const PuppeteerMassScreenshots = require('puppeteer-mass-screenshots');
 
 class PuppeteerVideoRecorder {
@@ -16,15 +17,15 @@ class PuppeteerVideoRecorder {
         await this.screenshots.init(page, imagesPath, {
             afterWritingImageFile: (filename) => appendToFile(imagesFilename, `file '${filename}'\n`)
         });
-    }             
+    }
 
-    start(options = {}) { 
+    start(options = {}) {
         return this.screenshots.start(options);
     }
-    
+
     async stop () {
     	await this.screenshots.stop();
-    	return this.createVideo();
+    	await this.createVideo();
     }
 
     get defaultFFMpegCommand() {
@@ -39,13 +40,9 @@ class PuppeteerVideoRecorder {
         ].join(' ');
     }
 
-    createVideo(ffmpegCommand = '') {
+    async createVideo(ffmpegCommand = '') {
         const _ffmpegCommand = ffmpegCommand || this.defaultFFMpegCommand;
-        exec(_ffmpegCommand, (error, stdout, stderr) => {
-            if (error) throw new Error(error);
-            console.log(stdout);
-            console.log(stderr);
-        });
+        return await promisify(exec)(_ffmpegCommand);
     }
 }
 

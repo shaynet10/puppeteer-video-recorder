@@ -1,4 +1,5 @@
 node_modules
 tests/images/*
 tests/images.txt
+.idea
 
