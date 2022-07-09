@@ -25,7 +25,7 @@ class PuppeteerVideoRecorder {
 
     async stop () {
     	await this.screenshots.stop();
-    	await this.createVideo();
+    	return await this.createVideo();
     }
 
     get defaultFFMpegCommand() {
