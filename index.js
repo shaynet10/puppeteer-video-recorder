@@ -24,8 +24,8 @@ class PuppeteerVideoRecorder {
     }
 
     async stop () {
-    	await this.screenshots.stop();
-    	return await this.createVideo();
+        await this.screenshots.stop();
+        return await this.createVideo();
     }
 
     get defaultFFMpegCommand() {
@@ -35,6 +35,8 @@ class PuppeteerVideoRecorder {
             '-f concat',
             '-safe 0',
             `-i ${imagesFilename}`,
+            '-bsf:v setts=TS/2',
+            '-r 60',
             '-pix_fmt yuv420p',
             '-vf scale="720:1280"',
             videoFilename
