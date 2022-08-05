@@ -3,6 +3,8 @@ const { exec } = require('child_process');
 const { promisify } = require('util');
 const PuppeteerMassScreenshots = require('puppeteer-mass-screenshots');
 
+const FRAME_RATE = 42;
+const SIZE = '1080:1920';
 class PuppeteerVideoRecorder {
     constructor(){
         this.screenshots = new PuppeteerMassScreenshots();
@@ -36,9 +38,9 @@ class PuppeteerVideoRecorder {
             '-safe 0',
             `-i ${imagesFilename}`,
             '-bsf:v setts=TS/3',
-            '-r 60',
+            `-r ${FRAME_RATE}`,
             '-pix_fmt yuv420p',
-            '-vf scale="720:1280"',
+            `-vf scale="${SIZE}"`,
             videoFilename
         ].join(' ');
     }
