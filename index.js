@@ -3,12 +3,13 @@ const { exec } = require('child_process');
 const { promisify } = require('util');
 const PuppeteerMassScreenshots = require('puppeteer-mass-screenshots');
 
-const FRAME_RATE = 42;
+const FRAME_RATE = 36;
 const SIZE = '1080:1920';
 class PuppeteerVideoRecorder {
-    constructor(){
+    constructor(frameRate){
         this.screenshots = new PuppeteerMassScreenshots();
         this.fsHandler = new FsHandler();
+        this.frameRate = frameRate;
     }
 
     async init(page, outputFolder){
@@ -38,7 +39,7 @@ class PuppeteerVideoRecorder {
             '-safe 0',
             `-i ${imagesFilename}`,
             '-bsf:v setts=TS/3',
-            `-r ${FRAME_RATE}`,
+            `-r ${this.frameRate ?? FRAME_RATE}`,
             '-pix_fmt yuv420p',
             `-vf scale="${SIZE}"`,
             videoFilename
