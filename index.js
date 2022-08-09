@@ -52,6 +52,10 @@ class PuppeteerVideoRecorder {
         await promisify(exec)(_ffmpegCommand);
         return videoFilename
     }
+
+    getFilesNumber() {
+        return this.fsHandler.getFilesNumber();
+    }
 }
 
 module.exports = PuppeteerVideoRecorder;

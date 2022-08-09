@@ -36,9 +36,13 @@ class FsHandler {
         console.log(`Removing files in ${imagesPath}`);
         for (const file of files) {
             const filename = join(imagesPath, file);
-            console.log(`Removing file ${filename}`);
             await unlink(filename);
         }
+        console.log(`Removed all files in ${imagesPath}`);
+    }
+
+    async getFilesNumber() {
+        return (await readdir(this.imagesPath)).length;
     }
 }
 
