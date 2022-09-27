@@ -5,6 +5,45 @@ const PuppeteerMassScreenshots = require('puppeteer-mass-screenshots');
 
 const FRAME_RATE = 25;
 const SIZE = '1080:1920';
+
+/**
+ * Gets the default `ffmpeg` command
+ * @param {*} frameRate - frameRate for the video generation
+ * @param {*} imagesFilename - images list file name
+ * @param {*} videoFilename - resulting video file name
+ * @returns - the string representation of the `ffmpeg` command with all parameters
+ */
+const getFFMpegCommand = (imagesFilename, videoFilename, frameRate) =>
+  [
+    // it's important to pass `-r` option twice to set the frame rate of the input and output stream
+    'ffmpeg',
+    '-f concat',
+    '-safe 0',
+    `-r ${frameRate}`,
+    `-i ${imagesFilename}`,
+    `-r ${frameRate}`,
+    '-pix_fmt yuv420p',
+    `-vf scale='${SIZE}'`,
+    videoFilename,
+  ].join(' ');
+
+/**
+ * Splits the array of image file names by the steps
+ * @param {string[]} files - image filenames list
+ * @param {number[]} durations - step durations list
+ * @returns Objects of steps with a list of files for each step
+ */
+
+const duplicateGetStepData = (file, duration, step) => ({
+    images: file,
+    // totalVideoTime may be longer than the sum of durations
+    // all extra time goes to the last step
+    duration,
+    frameRate: Math.round((file.length / duration) * 1000 * 10) / 10,
+    step
+  });
+
+
 class PuppeteerVideoRecorder {
     constructor(){
         this.screenshots = new PuppeteerMassScreenshots();
@@ -37,49 +76,18 @@ class PuppeteerVideoRecorder {
         return this.createVideo(videoRealLength);
     }
 
-    /**
-     * Gets the default `ffmpeg` command
-     * @param {*} frameRate - frameRate for the video generation
-     * @returns - the string representation of the `ffmpeg` command with all parameters
-     */
-    defaultFFMpegCommand(frameRate) {
-        const { imagesFilename, videoFilename } = this.fsHandler;
-        // it's important to pass `-r` option twice to set the frame rate of the input and output stream
-        return [
-            'ffmpeg',
-            '-f concat',
-            '-safe 0',
-            `-r ${frameRate}`,
-            `-i ${imagesFilename}`,
-            `-r ${frameRate}`,
-            '-pix_fmt yuv420p',
-            `-vf scale="${SIZE}"`,
-            videoFilename
-        ].join(' ');
-    }
-
-    /**
-     * Creates video out of the screenshots
-     * @param {*} ms - time period during which the screenshots were created
-     * @param {*} ffmpegCommand - custom `ffmpeg` command to be used instead of the default one
-     * @returns - Video file name
-     */
-    async createVideo(ms, ffmpegCommand = '') {
-        const { videoFilename } = this.fsHandler;
-        const frameRate = await this.getFrameRate(ms) ?? FRAME_RATE;
-        const command = ffmpegCommand || this.defaultFFMpegCommand(frameRate);
-        console.log('ffmpeg command', command);
-        await promisify(exec)(command);
-        return videoFilename;
-    }
-
-    /**
-     * Gets the number of created screenshots
-     * @returns - Number of screenshots generated between the `start` and `stop` commands
-     */
-    async getFilesNumber() {
-        return await this.fsHandler.getFilesNumber();
-    }
+  /**
+   * Creates step videos by out of the screenshots split by the given number of steps with provided durations
+   * @param {number[]} durations - array with the story screens with their durations in ms
+   * @param {number} step - step numbering
+   * @returns
+   */
+  async createStepVideo (duration, step) {
+    const files = await this.fsHandler.getFiles();
+    console.log('Total files created: ', files.length);
+    console.log('Total video length: ', duration);
+    return this.createSingleVideo(duplicateGetStepData(files, duration, step), new Date())
+  }
 
     /**
      * Gets the frame rate for the video (number_of_screenshots / record_time_in_s)
